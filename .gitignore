@@ -1,0 +1,58 @@
+# R specific #
+###############
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+.Rproj.user
+.Rproj.user/
+.Rproj.user
+
+# R build #
+############
+*.tar.gz
+*.Rcheck/
+*_cache/
+/cache/
+*.utf8.md
+*.knit.md
+
+# R environment #
+##################
+.Renviron
+.Rprofile
+.renviron
+.rprofile
+
+# Compiled Source #
+###################
+*.o
+*.so
+*.dll
+
+# Packrat #
+############
+/packrat/lib*
+/packrat/src*
+/packrat/bundles*
+/packrat/init.R
+
+# Plots #
+#########
+*.png
+*.jpeg
+*.jpg
+*.tiff
+*.tif
+*.pdf
+*.svg
+
+# Other ignored files #
+########################
+.idea/
+.DS_Store # Exclude Mac system files
+
+# Exclude dataset files #
+##########################
+data/*.csv
+data/*.csv.bz2
