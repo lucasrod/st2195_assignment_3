@@ -7,7 +7,7 @@ download_data <- function(){
   # Define a vector of the required files to download
   required_files <- c("2000.csv.bz2", "2001.csv.bz2", "2002.csv.bz2",
                       "2003.csv.bz2", "2004.csv.bz2", "2005.csv.bz2",
-                      "airports.csv", "carriers.csv", "plane_data.csv")
+                      "airports.csv", "carriers.csv", "plane-data.csv")
   
   # Filter the metadata to get URLs for the required files
   required_distributions = filter_metadata_by_filename("data/DataExpo2009_AirlineOnTimeData_Metadata_SchemaOrg.jsonld", required_files)
