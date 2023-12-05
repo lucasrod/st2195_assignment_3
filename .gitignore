@@ -50,9 +50,8 @@
 # Other ignored files #
 ########################
 .idea/
-.DS_Store # Exclude Mac system files
+.DS_Store
 
 # Exclude dataset files #
 ##########################
-data/*.csv
-data/*.csv.bz2
+data/*
