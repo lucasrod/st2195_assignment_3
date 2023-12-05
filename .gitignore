@@ -54,4 +54,9 @@
 
 # Exclude dataset files #
 ##########################
+<<<<<<< HEAD
 data/*
+=======
+r_sql/data/*
+python_sql/data/*
+>>>>>>> 5904822 (Minor change to .gitignore)
