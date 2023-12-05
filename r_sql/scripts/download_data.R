@@ -1,16 +1,53 @@
 # download_data.R
 library(httr)
+library(jsonlite)
 
-# Function to download a specific file using its persistent ID
-download_file_by_id <- function(api_token, server_url, persistent_id, destfile) {
-  # Check if the file already exists
-  if (!file.exists(destfile)) {
-    # Construct the API endpoint for a specific file
-    api_endpoint <- sprintf("%s/api/access/datafile/:persistentId?persistentId=%s", 
-                            server_url, persistent_id)
+# Main function of the script, downloads the specified files from the Data Expo 2009 dataset
+download_data <- function(){
+  # Define a vector of the required files to download
+  required_files <- c("2000.csv.bz2", "2001.csv.bz2", "2002.csv.bz2",
+                      "2003.csv.bz2", "2004.csv.bz2", "2005.csv.bz2",
+                      "airports.csv", "carriers.csv", "plane_data.csv")
+  
+  # Filter the metadata to get URLs for the required files
+  required_distributions = filter_metadata_by_filename("data/DataExpo2009_AirlineOnTimeData_Metadata_SchemaOrg.jsonld", required_files)
+  
+  # Iterate over the required distributions and download each file
+  for (i in 1:nrow(required_distributions)) {
+    file_name <- required_distributions$name[i]
+    file_url <- required_distributions$contentUrl[i]
     
-    # Make the API request
-    response <- GET(api_endpoint, add_headers(`X-Dataverse-key` = api_token))
+    # Construct the destination file path
+    destfile <- paste0("data/", file_name)
+    
+    # Download the file using its URL
+    download_file_by_url(file_url, destfile)
+  }
+}
+
+# Function to filter the metadata file based on a list of required file names.
+filter_metadata_by_filename <- function(metadatafile, required_files){
+  # Extract the distribution section which contains file URLs and identifiers
+  distributions <- fromJSON(metadatafile)$distribution
+  
+  # Filter distributions to only required files
+  required_distributions <- distributions[distributions$name %in% required_files, ]
+  
+  # The %in% operator checks if elements in the distributions data frame column name are present in vector required_files. It returns a logical vector
+  # The logical vector specifies which rows to select, those where the condition is TRUE
+  # The blank space after the comma means "select all columns"
+  
+  # Return the filtered list of distributions
+  return(required_distributions)
+}
+
+# Function to download a specific file using its URL
+download_file_by_url <- function(url, destfile) {
+  # Check if the file already exists to avoid unnecessary downloads
+  if (!file.exists(destfile)) {
+    # Notify the user about the download initiation
+    message("Downloading: ", destfile)
+    response <- GET(url)
     
     # Check if the request was successful
     if (status_code(response) == 200) {
@@ -23,36 +60,4 @@ download_file_by_id <- function(api_token, server_url, persistent_id, destfile) 
   } else {
     message("File already exists: ", destfile)
   }
-}
-
-# Persistent IDs for each file
-api_token <- "b3fc0526-7156-4fd9-bea4-c88a233364ef"
-server_url <- "https://dataverse.harvard.edu"
-
-plane_data_id <- "doi:10.7910/DVN/HG7NV7/XXSL8A"
-carriers_id <- "doi:10.7910/DVN/HG7NV7/3NOQ6Q"
-airports_id <- "doi:10.7910/DVN/HG7NV7/XTPZZY"
-
-yearly_files <- list(
-  "2000" = "doi:10.7910/DVN/HG7NV7/YGU3TD",
-  "2001" = "doi:10.7910/DVN/HG7NV7/CI5CEM",
-  "2002" = "doi:10.7910/DVN/HG7NV7/OWJXH3",
-  "2003" = "doi:10.7910/DVN/HG7NV7/KM2QOA",
-  "2004" = "doi:10.7910/DVN/HG7NV7/CCAZGT",
-  "2005" = "doi:10.7910/DVN/HG7NV7/JTFT25"
-)
-
-# Check if the 'data' directory exists; create it if not
-if (!dir.exists("data")) {
-  dir.create("data")
-}
-
-# Download each file
-download_file_by_id(api_token, server_url, plane_data_id, "data/plane_data.csv")
-download_file_by_id(api_token, server_url, carriers_id, "data/carriers.csv")
-download_file_by_id(api_token, server_url, airports_id, "data/airports.csv")
-for (year in names(yearly_files)) {
-  persistent_id <- yearly_files[[year]]
-  destfile <- paste0("data/", year, ".csv.bz2")
-  download_file_by_id(api_token, server_url, persistent_id, destfile)
 }
