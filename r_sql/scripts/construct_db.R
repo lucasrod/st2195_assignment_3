@@ -1,4 +1,3 @@
-# construct_db.R
 library(DBI)
 library(RSQLite)
 library(readr)
@@ -6,6 +5,9 @@ library(readr)
 # Main function of the script; builds the schema of the SQLite database
 construct_db <- function(){
   # Define database path
+  if (!dir.exists("database")) {
+    dir.create("database")
+  }
   database_path <- "database/airline2.db"
   
   # Define table names and corresponding CSV file paths
