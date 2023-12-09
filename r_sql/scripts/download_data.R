@@ -1,14 +1,9 @@
-# download_data.R
 library(httr)
 library(jsonlite)
+# This script requires the dataset specification (metadata) json file
 
-# Main function of the script, downloads the specified files from the Data Expo 2009 dataset
-download_data <- function(){
-  # Define a vector of the required files to download
-  required_files <- c("2000.csv.bz2", "2001.csv.bz2", "2002.csv.bz2",
-                      "2003.csv.bz2", "2004.csv.bz2", "2005.csv.bz2",
-                      "airports.csv", "carriers.csv", "plane-data.csv")
-  
+# Main function of this, downloads the specified files from the Data Expo 2009 dataset
+download_data <- function(required_files){
   # Filter the metadata to get URLs for the required files
   required_distributions = filter_metadata_by_filename("data/DataExpo2009_AirlineOnTimeData_Metadata_SchemaOrg.jsonld", required_files)
   
@@ -25,7 +20,7 @@ download_data <- function(){
   }
 }
 
-# Function to filter the metadata file based on a list of required file names.
+# Filter metadata based on a list of required file names
 filter_metadata_by_filename <- function(metadatafile, required_files){
   # Extract the distribution section which contains file URLs and identifiers
   distributions <- fromJSON(metadatafile)$distribution
@@ -45,19 +40,19 @@ filter_metadata_by_filename <- function(metadatafile, required_files){
 download_file_by_url <- function(url, destfile) {
   # Check if the file already exists to avoid unnecessary downloads
   if (!file.exists(destfile)) {
-    # Notify the user about the download initiation
-    message("Downloading: ", destfile)
+    # Notify the user about the download
+    message("Downloading:", destfile)
     response <- GET(url)
     
     # Check if the request was successful
     if (status_code(response) == 200) {
-      # Write the content of the response to a file
+      # Write the content of the response to destination file
       writeBin(content(response, "raw"), destfile)
-      message("File downloaded successfully: ", destfile)
+      message("File downloaded successfully:", destfile)
     } else {
-      stop("Failed to download file. Status code: ", status_code(response))
+      stop("Failed to download file. Status code:", status_code(response))
     }
   } else {
-    message("File already exists: ", destfile)
+    cat("File already exists:", destfile, "\n")
   }
 }
