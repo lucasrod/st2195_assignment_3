@@ -19,8 +19,6 @@ load_data <- function(db_path, tables_data) {
   db_conn <- dbConnect(RSQLite::SQLite(), dbname = db_path)
   
   # Iterate over the tables_data and load each table with csv data
-  # This needs to take into account 2000-2005 files for ontime data
-  # Iterate over the tables_data and load each table with csv data
   for (table_name in names(tables_data)) {
     csv_files <- tables_data[[table_name]]
     
