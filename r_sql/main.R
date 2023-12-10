@@ -1,6 +1,6 @@
 source("scripts/download_data.R")
 source("scripts/construct_db.R")
-# source("scripts/make_queries.R")
+source("scripts/queries.R")
 # source("scripts/save_to_csv.R")
 
 # Define some initial values for the dataset and database files
@@ -21,13 +21,12 @@ tables_data <- list(
   planes = "data/plane-data.csv")
 
 # Execute the workflow
-# Download Dataset
 message("Downloading Data Expo 2009: Airline Time Dataset\n")
 download_data(required_files)
 
 # Build SQLite db file and tables
 if (!file.exists(database_path)) {
-  message("Building ", database_path, "\n")
+  message("Building", database_path, "\n")
   init_db(database_path)
   
   # Load the actual data
@@ -35,9 +34,8 @@ if (!file.exists(database_path)) {
   load_data(database_path, tables_data)
 }
 
-# Make Queries
-# message("Executing queries...\n")
-# query_results <- make_queries()
+message("Executing queries...\n")
+execute_queries(database_path)
 
 # Save Results to CSV
 # message("Saving query results to CSV...\n")
