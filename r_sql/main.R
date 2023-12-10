@@ -1,7 +1,6 @@
 source("scripts/download_data.R")
 source("scripts/construct_db.R")
 source("scripts/queries.R")
-# source("scripts/save_to_csv.R")
 
 # Define some initial values for the dataset and database files
 required_files <- c("2000.csv.bz2", "2001.csv.bz2", "2002.csv.bz2",
@@ -37,8 +36,4 @@ if (!file.exists(database_path)) {
 message("Executing queries...\n")
 execute_queries(database_path)
 
-# Save Results to CSV
-# message("Saving query results to CSV...\n")
-# save_to_csv(query_results, "output/query_results.csv")
-
-# message("Assignment 3 completed\n")
+message("Assignment 3 completed\n")
