@@ -18,6 +18,12 @@ execute_queries <- function(db_path){
   plot_cancelled_flights_rate(cancelled_flights_rate, "cancelled_flights_rate.png")
   save_to_csv(cancelled_flights_rate, "cancelled_flights_rate.csv")
   
+  cancelled_flights_rate_2 <- get_cancelled_flights_rate_2(conn)
+  cat("Company with highest rate of cancelled flights 2\n")
+  print(cancelled_flights_rate_2)
+  plot_cancelled_flights_rate(cancelled_flights_rate_2, "cancelled_flights_rate_2.png")
+  save_to_csv(cancelled_flights_rate_2, "cancelled_flights_rate_2.csv")
+  
   avg_delay <- get_avg_dep_delay_by_planes(conn)
   cat("Airplane with lowest average departure delay (in minutes)\n")
   print(avg_delay)
@@ -61,8 +67,39 @@ get_cancelled_flights_rate <- function(conn) {
   SELECT Description AS Carrier, UniqueCarrier, SUM(Cancelled) / COUNT(*) AS cancel_rate
   FROM ontime o
   JOIN carriers c ON o.UniqueCarrier = c.Code
-  WHERE Cancelled = 1 AND UniqueCarrier IN ('UA', 'AA', '9E', 'DL')
+  WHERE UniqueCarrier IN ('UA', 'AA', '9E', 'DL')
   GROUP BY UniqueCarrier, Description
+  ORDER BY cancel_rate DESC
+  "
+  execute_query(conn, query)
+}
+
+get_cancelled_flights_rate_2 <- function(conn) {
+  query <- "
+  SELECT
+    q1.Carrier,
+    q1.UniqueCarrier,
+    (CAST(q1.CancelCount AS FLOAT) / CAST(q2.TotalFlights AS FLOAT)) AS cancel_rate
+  FROM
+    (SELECT
+      c.Description AS Carrier,
+      c.Code AS UniqueCarrier,
+      COUNT(*) AS CancelCount
+      FROM carriers c
+        JOIN ontime o ON o.UniqueCarrier = c.Code
+      WHERE o.Cancelled = 1
+        AND c.Description IN ('United Air Lines Inc.', 'American Airlines Inc.', 'Pinnacle Airlines Inc.', 'Delta Air Lines Inc.')
+      GROUP BY c.Description, c.Code
+    ) AS q1
+  JOIN
+    (SELECT
+        c.Description AS Carrier,
+        COUNT(*) AS TotalFlights
+      FROM carriers c
+        JOIN ontime o ON o.UniqueCarrier = c.Code
+      WHERE c.Description IN ('United Air Lines Inc.', 'American Airlines Inc.', 'Pinnacle Airlines Inc.', 'Delta Air Lines Inc.')
+      GROUP BY c.Description
+    ) AS q2 ON q1.Carrier = q2.Carrier
   ORDER BY cancel_rate DESC
   "
   execute_query(conn, query)
@@ -73,7 +110,7 @@ get_avg_dep_delay_by_planes<- function(conn) {
   SELECT model, AVG(DepDelay) AS avg_delay
   FROM ontime o
   JOIN planes p ON o.tailnum = p.tailnum
-  WHERE Cancelled = 0 AND Diverted = 0 AND DepDelay > 0
+  WHERE Cancelled = 0 AND Diverted = 0 AND DepDelay > 0 AND model IN ('737-230', 'ERJ 190-100 IGW', 'A330-223', '737-282')
   GROUP BY model
   ORDER BY avg_delay ASC
   "
@@ -85,15 +122,15 @@ get_inbound_flights_by_cities <- function(conn) {
   SELECT city, Dest, COUNT(*) AS inbound_flights
   FROM ontime o
   JOIN airports a ON o.Dest = a.iata
-  WHERE Cancelled = 0
-  GROUP BY Dest, city
+  WHERE Cancelled = 0 AND city IN ('Chicago', 'Atlanta', 'New York', 'Houston')
+  GROUP BY city
   ORDER BY inbound_flights DESC
   "
   execute_query(conn, query)
 }
 
 plot_cancelled_flights <- function(data, filename) {
-  plot <- ggplot(data, aes(x = reorder(UniqueCarrier, cancelled_flights), y = cancelled_flights)) +
+  plot <- ggplot(data, aes(x = reorder(Carrier, cancelled_flights), y = cancelled_flights)) +
     geom_bar(stat = "identity") +
     theme_minimal() +
     labs(title = "Cancelled Flights by Airline", x = "Airline", y = "Number of Cancelled Flights")
