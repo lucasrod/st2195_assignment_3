@@ -24,7 +24,9 @@ The SQLite database `airline2.db` has the following tables:
    - `scripts/` Contains R scripts for the project:
      - `download_data.R` Downloads the dataset
      - `construct_db.R` Loads the database
-     - `queries.R` Perform queries and some visualisation
+     - `data_analysis_with_ggplot.R` Conducts data analysis and creates visualizations using ggplot2. This script sources queries from either `queries_in_DBI.R` or `queries_in_dplyr.R`
+     - `queries_in_DBI.R` Contains database queries using the DBI package. This script is designed for direct SQL query execution and database interaction
+     - `queries_in_dplyr.R`: Contains database queries using the dplyr package. This script leverages dplyr's capabilities for database interaction and query building, offering a more R-centric approach
    - `output/` Directory to save generated output files
    - `r_sql.Rproj` RStudio project file
 - `python_sql/`
