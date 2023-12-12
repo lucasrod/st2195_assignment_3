@@ -3,10 +3,10 @@ library(dplyr)
 library(ggplot2)
 library(RSQLite)
 
-source("scripts/queries_in_DBI.R")
+source("scripts/queries_in_dplyr.R")
 
 execute_queries <- function(db_path){
-  conn <- connect_to_db(db_path)
+  conn <- dbConnect(SQLite(), db_path)
   
   cancelled_flights <- get_cancelled_flights_by_carrier(conn)
   cat("Company with highest number of cancelled flights\n")
@@ -41,18 +41,8 @@ execute_queries <- function(db_path){
   dbDisconnect(conn)
 }
 
-connect_to_db <- function(db_path) {
-  dbConnect(SQLite(), db_path)
-}
-
-# General function to run a query
-execute_query <- function(conn, query) {
-  cat(query, "\n")
-  dbGetQuery(conn, query)
-}
-
 plot_cancelled_flights <- function(data, filename) {
-  plot <- ggplot(data, aes(x = reorder(Carrier, cancelled_flights), y = cancelled_flights)) +
+  plot <- ggplot(data, aes(x = reorder(carrier, cancelled_flights), y = cancelled_flights)) +
     geom_bar(stat = "identity") +
     theme_minimal() +
     labs(title = "Cancelled Flights by Airline", x = "Airline", y = "Number of Cancelled Flights")
@@ -62,7 +52,7 @@ plot_cancelled_flights <- function(data, filename) {
 }
 
 plot_cancelled_flights_rate <- function(data, filename) {
-  plot <- ggplot(data, aes(x = reorder(Carrier, cancel_rate), y = cancel_rate)) +
+  plot <- ggplot(data, aes(x = reorder(carrier, cancel_rate), y = cancel_rate)) +
     geom_bar(stat = "identity") +
     theme_minimal() +
     labs(title = "Cancelled Flights Rate by Airline", x = "Airline", y = "Cancellation Rate")

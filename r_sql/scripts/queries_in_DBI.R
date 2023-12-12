@@ -1,7 +1,7 @@
 # Function for each specific query using DBI
 get_cancelled_flights_by_carrier <- function(conn) {
   query <- "
-  SELECT Description AS Carrier, UniqueCarrier, COUNT(*) AS cancelled_flights
+  SELECT Description carrier, UniqueCarrier code, COUNT(*) AS cancelled_flights
   FROM ontime o
   JOIN carriers c ON o.UniqueCarrier = c.Code
   WHERE Cancelled = 1 AND UniqueCarrier IN ('UA', 'AA', '9E', 'DL')
@@ -13,7 +13,7 @@ get_cancelled_flights_by_carrier <- function(conn) {
 
 get_cancelled_flights_rate <- function(conn) {
   query <- "
-  SELECT Description AS Carrier, UniqueCarrier, SUM(Cancelled) / COUNT(*) AS cancel_rate
+  SELECT Description carrier, UniqueCarrier code, SUM(Cancelled) / COUNT(*) AS cancel_rate
   FROM ontime o
   JOIN carriers c ON o.UniqueCarrier = c.Code
   WHERE UniqueCarrier IN ('UA', 'AA', '9E', 'DL')
@@ -26,8 +26,8 @@ get_cancelled_flights_rate <- function(conn) {
 get_cancelled_flights_rate_2 <- function(conn) {
   query <- "
   SELECT
-    q1.Carrier,
-    q1.UniqueCarrier,
+    q1.Carrier carrier,
+    q1.UniqueCarrier code,
     (CAST(q1.CancelCount AS FLOAT) / CAST(q2.TotalFlights AS FLOAT)) AS cancel_rate
   FROM
     (SELECT
@@ -68,7 +68,7 @@ get_avg_dep_delay_by_planes<- function(conn) {
 
 get_inbound_flights_by_cities <- function(conn) {
   query <- "
-  SELECT city, Dest, COUNT(*) AS inbound_flights
+  SELECT city, Dest iata_code, COUNT(*) AS inbound_flights
   FROM ontime o
   JOIN airports a ON o.Dest = a.iata
   WHERE Cancelled = 0 AND city IN ('Chicago', 'Atlanta', 'New York', 'Houston')
@@ -76,4 +76,8 @@ get_inbound_flights_by_cities <- function(conn) {
   ORDER BY inbound_flights DESC
   "
   execute_query(conn, query)
+}
+
+execute_query <- function(conn, query) {
+  dbGetQuery(conn, query)
 }
