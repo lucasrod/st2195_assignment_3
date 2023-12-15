@@ -30,6 +30,13 @@ The SQLite database `airline2.db` has the following tables:
    - `output/` Directory to save generated output files
    - `r_sql.Rproj` RStudio project file
 - `python_sql/`
-
-## License
-The used dataset is available under the Creative Commons CC0 1.0 Universal Public Domain Dedication
+   - `main.py`: Orchestrates the data processing workflow.
+   - `data/`: Directory for storing raw dataset files.
+   - `database/`: Directory for the SQLite `airline2.db` file.
+   - `scripts/`: Contains Python scripts for the project:
+     - `download_data.py`: Downloads the dataset.
+     - `construct_db.py`: Constructs and loads the database.
+     - `data_analysis.py`: Conducts data analysis and creates visualizations.
+     - `queries_sqlite.py`: Executes queries using Pandas with SQLite3.
+     - `queries_orm.py`: Executes queries using an ORM (SQLAlchemy or Peewee).
+   - `output/`: Directory to save generated output files.
