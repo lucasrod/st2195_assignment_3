@@ -1,52 +1,57 @@
-# This is a sample Python script.
+# Import from separate scripts for modularity
+# from scripts.download_data import DownloadData
+# from scripts.database_manager import DatabaseManager
+# from scripts.data_analysis import DataAnalysis
+# from scripts.query_executor import QueryExecutor, SQLiteQueryExecutor, ORMQueryExecutor
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+# Define initial values for dataset and database
+required_files = [
+    "2000.csv.bz2", "2001.csv.bz2", "2002.csv.bz2",
+    "2003.csv.bz2", "2004.csv.bz2", "2005.csv.bz2",
+    "airports.csv", "carriers.csv", "plane-data.csv"
+]
+database_path = "database/airline2.db"
+tables_data = {
+    "ontime": ["data/" + filename for filename in required_files[:6]],
+    "airports": "data/airports.csv",
+    "carriers": "data/carriers.csv",
+    "planes": "data/plane-data.csv"
+}
+# Default db library sqlite3
+def main(orm_backend="sqlite3"):
+    # Instantiate classes using imported modules
+    # downloader = DownloadData()
+    # db_manager = DatabaseManager(database_path)
+    # analyst = DataAnalysis()
+
+    # Choose and instantiate the appropriate QueryExecutor subclass based on orm_backend
+    # query_executor_classes = {
+    #     "sqlite3": SQLiteQueryExecutor,
+    #     "ponyorm": ORMQueryExecutor
+    # }
+
+    # Choose and instantiate QueryExecutor subclass based on orm_backend
+    # query_executor = query_executor_classes[orm_backend](database_path)
 
 
-def main():
-    # Use a breakpoint in the code line below to debug your script.
-    # Define some initial values for the dataset and database files
-    required_files = [
-        "2000.csv.bz2", "2001.csv.bz2", "2002.csv.bz2",
-        "2003.csv.bz2", "2004.csv.bz2", "2005.csv.bz2",
-        "airports.csv", "carriers.csv", "plane-data.csv"
-    ]
-
-    database_path = "database/airline2.db"
-
-    # Define table names and corresponding CSV file paths
-    tables_data = {
-        "ontime": ["data/2000.csv.bz2", "data/2001.csv.bz2",
-                   "data/2002.csv.bz2", "data/2003.csv.bz2",
-                   "data/2004.csv.bz2", "data/2005.csv.bz2"],
-        "airports": "data/airports.csv",
-        "carriers": "data/carriers.csv",
-        "planes": "data/plane-data.csv"
-    }
-
-    # Execute the workflow
-    print("Downloading Data Expo 2009: Airline Time Dataset\n") # Press ⌘F8 to toggle the breakpoint.
-    download_data.download(required_files)
-
-    # Build SQLite db file and tables
-    if not os.path.exists(database_path):
-        print(f"Building {database_path}\n")
-        construct_db.init_db(database_path)
-
-        # Load the actual data
-        print("Loading the data\n")
-        construct_db.load_data(database_path, tables_data)
-
-    print("Executing queries...\n")
-    queries_sqlite.execute_queries(database_path)
-    queries_orm.execute_queries(database_path)
-
-    print("Assignment 3 completed\n")
-
+    # Workflow execution with error handling
+    try:
+        print("Downloading Data Expo 2009: Airline Time Dataset\n")
+        # downloader.download(required_files)
+        #
+        # print(f"Building {database_path}\n")
+        # db_manager.construct_database(tables_data)
+        #
+        # print("Executing queries...\n")
+        # query_executor.execute_queries()
+        #
+        # print("Conducting data analysis...\n")
+        # analyst.perform_analysis()
+        #
+        # print("Assignment 3 completed")
+    except Exception as e:
+        print(f"Error: {e}")
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     main()
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
