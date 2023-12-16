@@ -1,5 +1,5 @@
 # Import from separate scripts for modularity
-# from scripts.download_data import DownloadData
+from scripts.download_data import DownloadData
 # from scripts.database_manager import DatabaseManager
 # from scripts.data_analysis import DataAnalysis
 # from scripts.query_executor import QueryExecutor, SQLiteQueryExecutor, ORMQueryExecutor
