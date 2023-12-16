@@ -16,9 +16,9 @@ class DownloadData:
         required_distributions = self._filter_metadata_by_filename(metadata, required_files)
 
         # Download each file
-        for i in range(len(required_distributions)):
-            file_name = required_distributions["name"][i]
-            file_url = required_distributions["contentUrl"][i]
+        for dist in required_distributions:
+            file_name = dist["name"]
+            file_url = dist["contentUrl"]
 
             destfile = os.path.join(self.data_dir, file_name)
 
@@ -46,7 +46,3 @@ class DownloadData:
                 print(f"Failed to download file. Status code: {response.status_code}")
         else:
             print(f"File already exists: {destfile}")
-
-# Example usage
-downloader = DownloadData()
-downloader.download(["1987.csv.bz2", "1990.csv.bz2"])
