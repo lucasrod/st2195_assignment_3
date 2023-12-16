@@ -20,7 +20,7 @@ tables_data = {
 # Default db library sqlite3
 def main(orm_backend="sqlite3"):
     # Instantiate classes using imported modules
-    # downloader = DownloadData()
+    downloader = DownloadData()
     # db_manager = DatabaseManager(database_path)
     # analyst = DataAnalysis()
 
@@ -37,7 +37,7 @@ def main(orm_backend="sqlite3"):
     # Workflow execution with error handling
     try:
         print("Downloading Data Expo 2009: Airline Time Dataset\n")
-        # downloader.download(required_files)
+        downloader.download(required_files)
         #
         # print(f"Building {database_path}\n")
         # db_manager.construct_database(tables_data)

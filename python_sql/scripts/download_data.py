@@ -20,7 +20,7 @@ class DownloadData:
             file_name = required_distributions["name"][i]
             file_url = required_distributions["contentUrl"][i]
 
-            destf ile = os.path.join(self.data_dir, file_name)
+            destfile = os.path.join(self.data_dir, file_name)
 
             self._download_file_by_url(file_url, destfile)
 
