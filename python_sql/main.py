@@ -1,6 +1,6 @@
 # Import from separate scripts for modularity
 from scripts.download_data import DownloadData
-# from scripts.database_manager import DatabaseManager
+from scripts.database_manager import DatabaseManager
 # from scripts.data_analysis import DataAnalysis
 # from scripts.query_executor import QueryExecutor, SQLiteQueryExecutor, ORMQueryExecutor
 
@@ -21,7 +21,7 @@ tables_data = {
 def main(orm_backend="sqlite3"):
     # Instantiate classes using imported modules
     downloader = DownloadData()
-    # db_manager = DatabaseManager(database_path)
+    database_manager = DatabaseManager(database_path)
     # analyst = DataAnalysis()
 
     # Choose and instantiate the appropriate QueryExecutor subclass based on orm_backend
@@ -38,9 +38,9 @@ def main(orm_backend="sqlite3"):
     try:
         print("Downloading Data Expo 2009: Airline Time Dataset\n")
         downloader.download(required_files)
-        #
-        # print(f"Building {database_path}\n")
-        # db_manager.construct_database(tables_data)
+
+        print(f"Building {database_path}\n")
+        database_manager.construct_database(tables_data)
         #
         # print("Executing queries...\n")
         # query_executor.execute_queries()
