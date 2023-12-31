@@ -1,8 +1,8 @@
-# Import from separate scripts for modularity
 from scripts.download_data import DownloadData
 from scripts.database_manager import DatabaseManager
-# from scripts.data_analysis import DataAnalysis
-# from scripts.query_executor import QueryExecutor, SQLiteQueryExecutor, ORMQueryExecutor
+# from scripts.base_query_executor import BaseQueryExecutor
+# from scripts.sqlite_query_executor import SQLiteQueryExecutor
+from scripts.data_analysis import DataAnalysis
 
 # Define initial values for dataset and database
 required_files = [
@@ -17,41 +17,35 @@ tables_data = {
     "carriers": "data/carriers.csv",
     "planes": "data/plane-data.csv"
 }
-# Default db library sqlite3
+
+
 def main(orm_backend="sqlite3"):
     # Instantiate classes using imported modules
     downloader = DownloadData()
     database_manager = DatabaseManager(database_path)
-    # analyst = DataAnalysis()
+
+    if not database_manager.database_exists():
+        print("Downloading Data Expo 2009: Airline Time Dataset\n")
+        downloader.download(required_files)
+        print(f"Building {database_path}\n")
+        database_manager.construct_database(tables_data)
+    else:
+        print(f"Database {database_path} already exists, skipping setup\n")
 
     # Choose and instantiate the appropriate QueryExecutor subclass based on orm_backend
     # query_executor_classes = {
-    #     "sqlite3": SQLiteQueryExecutor,
-    #     "ponyorm": ORMQueryExecutor
+    #     "sqlite3": SQLiteQueryExecutor
     # }
-
+    # print("Using {} query executor\n")
     # Choose and instantiate QueryExecutor subclass based on orm_backend
     # query_executor = query_executor_classes[orm_backend](database_path)
 
+    # print("Conducting data analysis...\n")
+    analyst = DataAnalysis()
+    analyst.perform_analysis(database_path)
+    #
+    # print("Assignment 3 completed")
 
-    # Workflow execution with error handling
-    try:
-        print("Downloading Data Expo 2009: Airline Time Dataset\n")
-        downloader.download(required_files)
 
-        print(f"Building {database_path}\n")
-        database_manager.construct_database(tables_data)
-        #
-        # print("Executing queries...\n")
-        # query_executor.execute_queries()
-        #
-        # print("Conducting data analysis...\n")
-        # analyst.perform_analysis()
-        #
-        # print("Assignment 3 completed")
-    except Exception as e:
-        print(f"Error: {e}")
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     main()
