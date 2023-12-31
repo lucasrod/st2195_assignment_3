@@ -1,12 +1,28 @@
-import sqlite3
-import os
-import pandas as pd
 import bz2
+import os
+import sqlite3
+
+import pandas as pd
 from chardet import detect
+
+
+# Implemented to avoid encoding errors when pd.read_csv()
+def get_file_encoding(filename):
+    # Check if the file is compressed
+    if filename.endswith('.bz2'):
+        with bz2.open(filename, 'rb') as f:
+            return detect(f.read(10000))['encoding']
+    else:
+        with open(filename, 'rb') as f:
+            return detect(f.read(10000))['encoding']
+
 
 class DatabaseManager:
     def __init__(self, database_path):
         self.database_path = database_path
+
+    def database_exists(self):
+        return os.path.exists(self.database_path)
 
     def construct_database(self, tables_data):
         # Initialize the database
@@ -23,25 +39,14 @@ class DatabaseManager:
                 self._load_table(csv_files, table_name)  # Corrected line
 
     def _init_database(self):
-        # Create directory if it doesn't exist
-        os.makedirs(os.path.dirname(self.database_path), exist_ok=True)
-
         # Delete existing database file if present
-        if os.path.exists(self.database_path):
+        if self.database_exists():
             os.remove(self.database_path)
-
-    # Implemented this to avoid encoding errors when pd.read_csv()
-    def get_encoding(self, filename):
-        # Check if the file is compressed
-        if filename.endswith('.bz2'):
-            with bz2.open(filename, 'rb') as f:
-                return detect(f.read(10000))['encoding']
         else:
-            with open(filename, 'rb') as f:
-                return detect(f.read(10000))['encoding']
+            os.makedirs(os.path.dirname(self.database_path), exist_ok=True)
 
     def _load_table(self, csv_file, table_name):
-        encoding = self.get_encoding(csv_file)
+        encoding = get_file_encoding(csv_file)
         conn = sqlite3.connect(self.database_path)
         print(f"Processing {csv_file} with encoding {encoding}")
         data = pd.read_csv(csv_file, encoding=encoding, low_memory=False)
