@@ -37,6 +37,4 @@ The SQLite database `airline2.db` has the following tables:
      - `download_data.py`: Downloads the dataset.
      - `construct_db.py`: Constructs and loads the database.
      - `data_analysis.py`: Conducts data analysis and creates visualizations.
-     - `queries_sqlite.py`: Executes queries using Pandas with SQLite3.
-     - `queries_orm.py`: Executes queries using an ORM (SQLAlchemy or Peewee).
    - `output/`: Directory to save generated output files.
