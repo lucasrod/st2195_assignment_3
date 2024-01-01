@@ -1,6 +1,6 @@
 source("scripts/download_data.R")
 source("scripts/construct_db.R")
-source("scripts/data_analysis_with_ggplot.R")
+source("scripts/data_analysis.R")
 
 # Define some initial values for the dataset and database files
 required_files <- c("2000.csv.bz2", "2001.csv.bz2", "2002.csv.bz2",

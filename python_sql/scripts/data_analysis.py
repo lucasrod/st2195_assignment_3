@@ -48,7 +48,7 @@ class DataAnalysis:
 
     def cancelled_flights_rate(self):
         query = """
-        SELECT Description carrier, UniqueCarrier code, SUM(Cancelled) / COUNT(*) AS cancel_rate
+        SELECT Description carrier, UniqueCarrier code, CAST(SUM(Cancelled) AS FLOAT) / COUNT(*) AS cancel_rate
         FROM ontime o
         JOIN carriers c ON o.UniqueCarrier = c.Code
         WHERE UniqueCarrier IN ('UA', 'AA', '9E', 'DL')

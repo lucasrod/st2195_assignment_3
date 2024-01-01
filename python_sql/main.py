@@ -1,7 +1,5 @@
 from scripts.download_data import DownloadData
 from scripts.database_manager import DatabaseManager
-# from scripts.base_query_executor import BaseQueryExecutor
-# from scripts.sqlite_query_executor import SQLiteQueryExecutor
 from scripts.data_analysis import DataAnalysis
 
 # Define initial values for dataset and database
@@ -32,19 +30,11 @@ def main(orm_backend="sqlite3"):
     else:
         print(f"Database {database_path} already exists, skipping setup\n")
 
-    # Choose and instantiate the appropriate QueryExecutor subclass based on orm_backend
-    # query_executor_classes = {
-    #     "sqlite3": SQLiteQueryExecutor
-    # }
-    # print("Using {} query executor\n")
-    # Choose and instantiate QueryExecutor subclass based on orm_backend
-    # query_executor = query_executor_classes[orm_backend](database_path)
-
-    # print("Conducting data analysis...\n")
+    print("Conducting data analysis...\n")
     analyst = DataAnalysis()
     analyst.perform_analysis(database_path)
-    #
-    # print("Assignment 3 completed")
+
+    print("Assignment 3 completed")
 
 
 if __name__ == '__main__':

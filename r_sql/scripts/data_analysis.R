@@ -3,7 +3,7 @@ library(dplyr)
 library(ggplot2)
 library(RSQLite)
 
-source("scripts/queries_in_dplyr.R")
+source("scripts/queries_in_DBI.R")
 
 execute_queries <- function(db_path){
   conn <- dbConnect(SQLite(), db_path)
