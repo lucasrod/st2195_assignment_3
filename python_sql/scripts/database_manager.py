@@ -1,5 +1,8 @@
 import bz2
 import os
+import subprocess
+import webbrowser
+import time
 import sqlite3
 
 import pandas as pd
@@ -23,6 +26,25 @@ class DatabaseManager:
 
     def database_exists(self):
         return os.path.exists(self.database_path)
+
+    def serve_datasette(self):
+        # Serving the database using Datasette
+        print(f"Serving {self.database_path} with Datasette...")
+        # Start Datasette in a separate thread or process
+        proc = subprocess.Popen(["datasette", self.database_path])
+
+        # Wait for a few seconds to ensure Datasette server starts
+        time.sleep(3)
+
+        # Open the default web browser
+        webbrowser.open("http://localhost:8001")
+
+        # Keep the script running to serve the Datasette
+        try:
+            proc.wait()
+        except KeyboardInterrupt:
+            # Handle Ctrl+C to stop the server
+            proc.terminate()
 
     def construct_database(self, tables_data):
         # Initialize the database

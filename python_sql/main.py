@@ -16,8 +16,7 @@ tables_data = {
     "planes": "data/plane-data.csv"
 }
 
-
-def main(orm_backend="sqlite3"):
+def main(serve_datasette=False):
     # Instantiate classes using imported modules
     downloader = DownloadData()
     database_manager = DatabaseManager(database_path)
@@ -30,6 +29,9 @@ def main(orm_backend="sqlite3"):
     else:
         print(f"Database {database_path} already exists, skipping setup\n")
 
+    if serve_datasette:
+        database_manager.serve_datasette()
+
     print("Conducting data analysis...\n")
     analyst = DataAnalysis()
     analyst.perform_analysis(database_path)
@@ -38,4 +40,4 @@ def main(orm_backend="sqlite3"):
 
 
 if __name__ == '__main__':
-    main()
+    main(serve_datasette=True)
